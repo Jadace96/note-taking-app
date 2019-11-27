@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./css/index.css">
+  <title>Notes</title>
+</head>
+
+<body>
+  <div id="appContainer">
+    
+    <div id="sidebar">
+      <div id="sidebarButtonsContainer">
+        <button onclick="onCreateNote({event})" id="addNoteButton">Add note</button>
+        <button disabled onclick="onDeleteNote()" id="deleteNoteButton">Delete note</button>
+        <button disabled onclick="onDeleteAllNotes()" id="deleteAllButton">Delete all</button>
+      </div>
+      <ul id="noteListContainer"></ul>
+    </div>
+    
+    <div id="content"></div>
+
+  </div>
+
+  <script src="./js/index.js"></script>
+</body>
+
+</html>
