@@ -9,7 +9,7 @@
   border-right: 1px solid #0000003b;
 }
 
-#noteListContainer {
+#sidebarNoteList {
   padding: 0;
   width: 100%;
   overflow: auto;
@@ -38,14 +38,13 @@
 #sidebarButtonsContainer button {
   border: none;
   outline: none;
-  color: white;
+  color: #ffffff;
   cursor: pointer;
   font-size: 1rem;
   width: fit-content;
-  padding: 0.5rem 0.6rem;
+  padding: 0.5rem 1rem;
   background-color: transparent;
 }
-
 
 .sidebar-note {
   border: none;
@@ -69,29 +68,30 @@
 }
 
 .sidebar-note:hover:not(.active) {
-  color: white;
-  background-color: rgb(158, 153, 153);
+  color: #ffffff;
+  background-color: #c5c4c4;
 }
 
-#content {
+#noteBoxesContainer {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   height: fit-content;
 }
 
-.new-note {
+.new-note-box {
   width: 100%;
   height: 10vh;
   margin: 1rem;
   padding: 0.5rem;
   font-size: 1rem;
-  background-color: rgb(158, 153, 153);
+  border-radius: 3px;
+  background-color: #e5e2e2;
 }
 
 .active {
-  color: white;
-  background-color: rgb(110, 106, 106);
+  color: #ffffff;
+  background-color: #b3b2b2;
 }
 
 @media (min-width: 768px) {
@@ -105,24 +105,24 @@
 
   #sidebar {
     height: 100vh;
-    max-width: 18rem;
+    max-width: 20rem;
   }
 
-  #noteListContainer {
+  #sidebarNoteList {
     margin-top: 0;
     max-height: calc(100% - 4.5rem);
   }
 
-  #content {
+  #noteBoxesContainer {
     padding: 0 0.6rem;
-    width: calc(100% - 18rem);
+    width: calc(100% - 20rem);
   }
 
-  .new-note {
+  .new-note-box {
     flex: 30%;
   }
 
-  #noteListContainer {
+  #sidebarNoteList {
     height: 100vh;
   }
 }
@@ -132,17 +132,17 @@
     max-width: 20rem;
   }
 
-  #content {
+  #noteBoxesContainer {
     padding: 0 1rem;
   }
 }
 
 @media (min-width: 1336px) {
-  #content {
+  #noteBoxesContainer {
     padding: 0 2.5rem;
   }
 
-  .new-note {
+  .new-note-box {
     flex: 25%;
   }
 }

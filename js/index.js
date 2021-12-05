@@ -1,138 +1,137 @@
-const content = document.getElementById("content");
-const noteListContainer = document.getElementById("noteListContainer");
+const noteBoxesContainer = document.querySelector('#noteBoxesContainer');
+const sidebarNoteList = document.querySelector('#sidebarNoteList');
 
-const shouldDisableDeleteButtons = () => {
-  const deleteNoteButton = document.getElementById("deleteNoteButton");
-  const deleteAllButton = document.getElementById("deleteAllButton");
+const changeDeleteButtonsDisableState = () => {
+  const deleteNoteButton = document.querySelector('#deleteNoteButton');
+  const deleteAllNotesButton = document.querySelector('#deleteAllNotesButton');
 
-  const storedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  const lengthNoteList = Object.keys(storedNotes).length;
+  const storedNotes = JSON.parse(localStorage.notes || '{}');
+  const noteListLengt = Object.keys(storedNotes).length;
 
-  deleteAllButton.disabled = lengthNoteList === 0;
+  deleteAllNotesButton.disabled = noteListLengt === 0;
   deleteNoteButton.disabled = !this.selectedNote;
 };
 
-function createNode({
-  id = "",
-  onClick,
-  onChange,
-  node = "div",
-  className = "",
-  value = "",
-  parentToAppendNode
+function createElement({
+  id = '',
+  value = '',
+  node = 'div',
+  className = '',
+  parentToAppendNode,
+  onClick = () => {},
+  onChange = () => {},
 }) {
-  const newNode = document.createElement(node);
+  const newElement = document.createElement(node);
 
-  newNode.id = id;
-  newNode.className = className;
-  newNode.innerHTML = value;
+  newElement.id = id;
+  newElement.className = className;
+  newElement.innerHTML = value;
 
-  onClick && newNode.addEventListener("click", onClick);
-  onChange && newNode.addEventListener("change", onChange);
+  newElement.addEventListener('click', onClick);
+  newElement.addEventListener('change', onChange);
 
-  parentToAppendNode && parentToAppendNode.appendChild(newNode);
+  parentToAppendNode && parentToAppendNode.appendChild(newElement);
 
-  return newNode;
+  return newElement;
 }
 
 function removeActiveClass(className) {
-  const nodeList = document.querySelectorAll(`.${className}`);
-  nodeList.forEach(node => node.classList.remove("active"));
+  const elementList = document.querySelectorAll(`.${className}`);
+  elementList.forEach((element) => element.classList.remove('active'));
 }
 
 const onClickNote = ({ target }) => {
-  const noteCard = document.getElementsByClassName(`new-note`)[target.id];
-  const sidebarNote = document.getElementsByClassName(`sidebar-note`)[
-    target.id
-  ];
+  const noteCard = document.getElementsByClassName(`new-note-box`)[target.id];
+  const sidebarNote =
+    document.getElementsByClassName(`sidebar-note`)[target.id];
 
   this.selectedNote = target;
 
-  removeActiveClass("new-note");
-  removeActiveClass("sidebar-note");
+  removeActiveClass('new-note-box');
+  removeActiveClass('sidebar-note');
 
-  sidebarNote.className += " active";
-  noteCard.className += " active";
-  shouldDisableDeleteButtons();
+  sidebarNote.className += ' active';
+  noteCard.className += ' active';
+  changeDeleteButtonsDisableState();
 };
 
 const onDeleteNote = () => {
-  const storedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+  const storedNotes = JSON.parse(localStorage.notes || '{}');
   delete storedNotes[this.selectedNote.id];
-  localStorage.setItem("notes", JSON.stringify(storedNotes));
+  localStorage.notes = JSON.stringify(storedNotes);
   location.reload();
 };
 
 function onDeleteAllNotes() {
-  localStorage.removeItem("notes");
+  localStorage.removeItem('notes');
   location.reload();
 }
 
 function onCreateSidebarNote(noteCard, prevValue) {
-  const nodeParams = {
-    node: "li",
+  const elementParams = {
+    node: 'li',
     id: noteCard.id,
     onClick: onClickNote,
-    className: "sidebar-note",
+    className: 'sidebar-note',
     value: prevValue || noteCard.value,
-    parentToAppendNode: noteListContainer
+    parentToAppendNode: sidebarNoteList,
   };
 
-  createNode(nodeParams);
-  shouldDisableDeleteButtons();
+  createElement(elementParams);
+  changeDeleteButtonsDisableState();
 }
 
 function storeNotes(note) {
-  const storedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+  const storedNotes = JSON.parse(localStorage.notes || '{}');
   const newNotes = { ...storedNotes, [note.id]: note };
-  localStorage.setItem("notes", JSON.stringify(newNotes));
+  localStorage.notes = JSON.stringify(newNotes);
 }
 
 function onChangeNote() {
   const { id, value } = this;
-  const storedNotes = JSON.parse(localStorage.getItem("notes")) || {};
+  const storedNotes = JSON.parse(localStorage.notes || '{}');
 
   const selectedNote = document.getElementById(id);
 
-  const sidebarNoteValue = `${value.substr(0, 40)}
+  const sidebarNoteValue = `${value.substr(0, 40)}...
   <span class="last-update">Last update ${new Date().toLocaleString()}</span>`;
   selectedNote.innerHTML = sidebarNoteValue;
 
   storedNotes[id].value = value;
   storedNotes[id].sidebarNoteValue = sidebarNoteValue;
 
-  localStorage.setItem("notes", JSON.stringify(storedNotes));
+  localStorage.notes = JSON.stringify(storedNotes);
 }
 
 const onCreateNote = ({ event, storedElement } = {}) => {
-  event && event.preventDefault();
-  const elementId = new Date();
-
-  const nodeParams = storedElement || {
-    node: "textarea",
-    id: elementId.getTime(),
-    className: `new-note ${elementId.getTime()}`,
-    value: `Last update ${elementId.toLocaleString()}`
+  event?.preventDefault();
+  const date = new Date();
+  const defaultNoteElementData = {
+    node: 'textarea',
+    id: date.getTime(),
+    className: `new-note-box ${date.getTime()}`,
+    value: `New note - ${date.toLocaleString()}`,
   };
 
-  !storedElement && storeNotes(nodeParams);
+  const elementParams = storedElement || defaultNoteElementData;
 
-  nodeParams.onClick = onClickNote;
-  nodeParams.onChange = onChangeNote;
-  nodeParams.parentToAppendNode = content;
+  !storedElement && storeNotes(elementParams);
 
-  const newNoteCard = createNode(nodeParams);
+  elementParams.onClick = onClickNote;
+  elementParams.onChange = onChangeNote;
+  elementParams.parentToAppendNode = noteBoxesContainer;
 
-  onCreateSidebarNote(newNoteCard, nodeParams.sidebarNoteValue);
+  const newNoteBox = createElement(elementParams);
+
+  onCreateSidebarNote(newNoteBox, elementParams.sidebarNoteValue);
 };
 
 function loadData() {
-  const storedNotes = JSON.parse(localStorage.getItem("notes")) || {};
-  if (storedNotes) {
-    Object.values(storedNotes).forEach(storedElement =>
-      onCreateNote({ storedElement })
-    );
-  }
+  const storedNotes = JSON.parse(localStorage?.notes || '{}');
+
+  Object.values(storedNotes).forEach((storedElement) =>
+    onCreateNote({ storedElement })
+  );
 }
 
 loadData();
